@@ -11,29 +11,35 @@
 |
 */
 
-Route::get('/', function () {
-    return view('templates.default');
-});
-
-
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/buku', 'BukuController@index')->name('buku');
-Route::get('/buku/create', 'BukuController@ViewCreate')->name('buku.ViewCreate');
-Route::get('/buku/edit', 'BukuController@edit')->name('buku.edit');
+Route::group(['prefix' => '/admin'], function (){
+    Route::get('/', 'DashboardController@index')->name('dashboard');
 
-Route::get('/anggota', 'AnggotaController@index')->name('anggota');
-Route::get('/anggota/create', 'AnggotaController@ViewCreate')->name('anggota.ViewCreate');
-Route::get('/anggota/edit', 'AnggotaController@edit')->name('anggota.edit');
+    Route::get('/buku', 'BukuController@index')->name('buku');
+    Route::get('/buku/create', 'BukuController@create')->name('buku.create');
+    Route::post('/buku/create', 'BukuController@store')->name('buku.store');
+    Route::get('/buku/edit/{id}', 'BukuController@edit')->name('buku.edit');
+    Route::patch('/buku/edit/{id}', 'BukuController@update')->name('buku.update');
+    Route::get('/buku/destroy/{id}', 'BukuController@destroy')->name('buku.destroy');
 
-Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+    Route::get('/peminjaman', 'PeminjamanController@index')->name('peminjaman');
+    Route::get('/peminjaman/create', 'PeminjamanController@create')->name('peminjaman.create');
+    Route::post('/peminjaman/create', 'PeminjamanController@store')->name('peminjaman.store');
+    Route::get('/peminjaman/edit/{id}', 'PeminjamanController@edit')->name('peminjaman.edit');
+    Route::patch('/peminjaman/edit/{id}', 'PeminjamanController@update')->name('peminjaman.update');
+    Route::get('/peminjaman/destroy/{id}', 'PeminjamanController@destroy')->name('peminjaman.destroy');
 
-Route::get('/peminjaman', 'PeminjamanController@index')->name('peminjaman');
-Route::get('/peminjaman/create', 'PeminjamanController@ViewCreate')->name('peminjaman.ViewCreate');
-Route::get('/peminjaman/edit', 'PeminjamanController@edit')->name('peminjaman.edit');
+    Route::get('/kategori', 'KategoriController@index')->name('kategori');
+    Route::get('/kategori/create', 'KategoriController@create')->name('kategori.create');
+    Route::post('/kategori/create', 'KategoriController@store')->name('kategori.store');
+    Route::get('/kategori/edit/{id}', 'KategoriController@edit')->name('kategori.edit');
+    Route::patch('/kategori/edit/{id}', 'KategoriController@update')->name('kategori.update');
+    Route::get('/kategori/destroy/{id}', 'KategoriController@destroy')->name('kategori.destroy');
 
-Route::get('/laporan', 'LaporanController@index')->name('laporan');
-Route::get('/laporan/create', 'LaporanController@ViewCreate')->name('laporan.ViewCreate');
-Route::get('/laporan/edit', 'LaporanController@edit')->name('laporan.edit');
+});
+
+Route::get('/', 'FrontEndController@index')->name('index');
+Route::get('/pinjam/{id}', 'FrontEndController@pinjam')->name('pinjam');
+Route::post('/pinjam/store', 'FrontEndController@store')->name('pinjam.store');

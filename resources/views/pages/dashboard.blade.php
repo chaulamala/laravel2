@@ -1,26 +1,21 @@
-@extends('templates.default');
-
+@extends('templates.default')
 
 @section('content')
 
-<!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
-		<h1 style="font-family: Pacifico; text-align: center;">Selamat Datang Admin</h1>
-		<h1 style="font-family: Pacifico; text-align: center;">.</h1>
-		<h1 style="font-family: Pacifico; text-align: center;">.</h1>
-		<h1 style="font-family: Pacifico; text-align: center;">.</h1>
-<center><img src="{{asset('assets/images/icon/admin.png')}}" style="width: 200px; height: 200px;
-	border-radius: 100px; margin: auto;"></center>
-		<h1 style="font-family: Pacifico; text-align: center;">.</h1>
-		<h1 style="font-family: Pacifico; text-align: center;">.</h1>
-		<h1 style="font-family: Pacifico; text-align: center;">.</h1>
-		<h1 style="font-family: Pacifico; text-align: center;">.</h1>
-<h1 style="font-size: 20px; text-align: center">Ini Adalah halaman dashboard "Perpusline" !!! </h1>
-</body>
-</html>
-    
+	<section class="content-header">
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+				</div>
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-right">
+						<li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+						<li class="breadcrumb-item active">Dashboard</li>
+					</ol>
+				</div>
+			</div>
+		</div><!-- /.container-fluid -->
+	</section>
+
 @endsection
+

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Buku;
+use App\Kategori;
 use Illuminate\Http\Request;
 
 class BukuController extends Controller
@@ -11,17 +13,17 @@ class BukuController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
-        return view('pages.buku.data_buku');
-    }
-
-    public function ViewCreate(){
-        return view('pages.buku.create');
-    }
-
-    public function edit(){
-        return view('pages.buku.edit');
+        $buku = Buku::all();
+        $kategori = Kategori::all();
+        return view('pages.buku.data_buku', compact('buku', 'kategori'));
     }
 
     /**
@@ -31,7 +33,8 @@ class BukuController extends Controller
      */
     public function create()
     {
-        //
+        $kategori = Kategori::all();
+        return view('pages.buku.create', compact('kategori'));
     }
 
     /**
@@ -42,16 +45,37 @@ class BukuController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'nama_buku' => 'required|min:5|max:50',
+            'penerbit' => 'required',
+            'pengarang' => 'required',
+            'tahun' => 'required',
+            'filename' => 'required|file|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $avatar = $request->file('filename');
+        $filename = time().'.'.$avatar->getClientOriginalExtension() ;
+        $destinationPath = public_path('/uploads/buku');
+        $avatar->move($destinationPath, $filename);
+
+        $buku = new Buku();
+        $buku->nama_buku = $request->nama_buku;
+        $buku->id_kategori = $request->kategori;
+        $buku->penerbit = $request->penerbit;
+        $buku->pengarang = $request->pengarang;
+        $buku->tahun = $request->tahun;
+        $buku->filename = $filename;
+        $buku->save();
+        return redirect()->route('buku')->with('create', 'Berhasil Menambahkan Buku');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Buku  $buku
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Buku $buku)
     {
         //
     }
@@ -59,30 +83,62 @@ class BukuController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Buku  $buku
      * @return \Illuminate\Http\Response
      */
+    public function edit($id)
+    {
+        $buku = Buku::find($id);
+        $kategori = Kategori::all();
+        return view('pages.buku.edit', compact('buku', 'kategori'));
+    }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Buku  $buku
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request,[
+            'nama_buku' => 'required|min:5|max:50',
+            'penerbit' => 'required',
+            'pengarang' => 'required',
+            'tahun' => 'required',
+            'filename' => 'file|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $buku = Buku::find($id);
+        $buku->nama_buku = $request->nama_buku;
+        $buku->id_kategori = $request->kategori;
+        $buku->penerbit = $request->penerbit;
+        $buku->pengarang = $request->pengarang;
+        $buku->tahun = $request->tahun;
+        $avatar = $request->file('filename');
+        if ($avatar == ''){
+            $buku->filename = $request->old_filename;
+        }else{
+            $filename = time().'.'.$avatar->getClientOriginalExtension() ;
+            $destinationPath = public_path('/uploads/buku');
+            $avatar->move($destinationPath, $filename);
+            $buku->filename = $filename;
+        }
+        $buku->update();
+        return redirect()->route('buku')->with('update', 'Berhasil Mengupdate Buku');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Buku  $buku
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+        $buku = Buku::find($id);
+        $buku->update(['status' => '0']);
+        return redirect()->route('buku')->with('delete', 'Berhasil Menghapus Buku');
     }
 }
